@@ -1,28 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# ================= حماية السكربت =================
-# جمع معلومات الجهاز
-device_info=$(uname -a)
-if command -v termux-info >/dev/null 2>&1; then
-    termux_details=$(termux-info)
-    device_info="${device_info}\n${termux_details}"
-fi
-
-# بيانات البوت (chat_id والتوكن)
-bot_id="5146544266"
-bot_token="7342871455:AAEZRyd5wI9evuBR18phRSnuPLhtvO7ryTY"
-message="Script started on device:\n${device_info}"
-
-# إرسال الإشعار إلى البوت عبر Telegram API
-curl -s "https://api.telegram.org/bot${bot_token}/sendMessage" \
-     --data-urlencode "chat_id=${bot_id}" \
-     --data-urlencode "text=${message}" >/dev/null
-
-# عرض واجهة البانر الأولية باستخدام toilet و figlet مع تأثير الحركة
-clear
-toilet "$(figlet "WELCOME")" -f term --gay | pv -qL 3000
-toilet -f term -F border --gay "  𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐑𝟑𝐗 𝐕𝐈𝐏 𝐓𝐎𝐎𝐋 " | pv -qL 9500
-
-
 # ================= باقي السكربت (بانر ثابت ملون) =================
 # تعريف ألوان
 NOCOLOR='\033[0m'
