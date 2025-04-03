@@ -21,6 +21,20 @@ curl -s "https://api.telegram.org/bot${bot_token}/sendMessage" \
 clear
 toilet "$(figlet "WELCOME")" -f term --gay | pv -qL 3000
 toilet -f term -F border --gay "  𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐑𝟑𝐗 𝐕𝐈𝐏 𝐓𝐎𝐎𝐋 " | pv -qL 9500
+toilet -f term -F gay " 𝐄𝐍𝐓𝐄𝐑 𝐘𝐎𝐔𝐑 𝐏𝐀𝐒𝐒𝐖𝐎𝐑𝐃 𝐓𝐎 𝐄𝐍𝐓𝐄𝐑 : " | pv -qL 2999
+
+# جلب كلمة السر من GitHub
+github_password=$(curl -s "https://raw.githubusercontent.com/r3xuu/-r3xuu/refs/heads/main/VIP.txt")
+# إزالة المسافات البيضاء والنهايات
+github_password=$(echo "$github_password" | tr -d '\r\n')
+
+# مطالبة المستخدم بإدخال كلمة السر
+read -p "Enter Password: " user_password
+
+if [ "$user_password" != "$github_password" ]; then
+    toilet -f term -F border --gay " 𝐈𝐍𝐂𝐎𝐑𝐑𝐄𝐂𝐓 𝐏𝐀𝐒𝐒𝐖𝐎𝐑𝐃 𝐆𝐎 𝐓𝐎 𝐓𝐇𝐄 𝐎𝐖𝐍𝐄𝐑 𝐓𝐎 𝐆𝐈𝐕𝐄 𝐔"
+    exit 1
+fi
 
 # ================= باقي السكربت (بانر ثابت ملون) =================
 # تعريف ألوان
