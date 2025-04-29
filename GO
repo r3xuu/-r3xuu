@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import logging
+from telegram import Update
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    CallbackContext,
+)
+
+# Enable logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
+# Your bot token
+TOKEN = "8118939822:AAHAt6C5EZOiNTiw69zBiRcjiB4haQSmIRA"
+
+# Command handler: /start
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(
+        "مرحبًا! أرسل لي أي ملف أو قم بإعادة توجيهه إليّ من أي قناة، وسأعيد تسميته إلى 𝐑𝟑𝐗 𝐅𝐈𝐋𝐄𝐒 وأرسله إليك."
+    )
+
+# Document handler: any file sent or forwarded
+def handle_document(update: Update, context: CallbackContext) -> None:
+    doc = update.message.document
+    if not doc:
+        return
+
+    # Download the file
+    file_id = doc.file_id
+    original_name = doc.file_name or ""
+    # Extract extension if present
+    ext = os.path.splitext(original_name)[1]  # includes the dot, e.g. '.zip'
+    # Build new filename
+    new_name = f"𝐑𝟑𝐗 𝐅𝐈𝐋𝐄𝐒{ext}"
+
+    # Fetch the file from Telegram
+    tg_file = context.bot.get_file(file_id)
+    temp_path = f"temp{ext or ''}"
+    tg_file.download(custom_path=temp_path)
+
+    # Send it back with the new name
+    with open(temp_path, "rb") as f:
+        context.bot.send_document(
+            chat_id=update.message.chat_id,
+            document=f,
+            filename=new_name
+        )
+
+    # Clean up
+    try:
+        os.remove(temp_path)
+    except OSError as e:
+        logger.warning(f"Could not remove temp file: {e}")
+
+def main() -> None:
+    # Create the Updater and pass it your bot's token.
+    updater = Updater(TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    # Handlers
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(MessageHandler(Filters.document, handle_document))
+
+    # Start the Bot
+    updater.start_polling()
+    logger.info("Bot started. Waiting for files...")
+
+    # Run the bot until Ctrl-C
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
